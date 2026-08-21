@@ -1,6 +1,6 @@
 # now-playing-overlay
 
-🌐 [English](./README.md) | [한국어](./README.ko.md)
+[English](./README.md) | [한국어](./README.ko.md)
 
 An always-on-top transparent overlay widget that shows what's currently playing (Electron Forge + Vite + TypeScript).
 

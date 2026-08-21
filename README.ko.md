@@ -1,6 +1,6 @@
 # now-playing-overlay
 
-🌐 [English](./README.md) | [한국어](./README.ko.md)
+[English](./README.md) | [한국어](./README.ko.md)
 
 항상 위에 떠있는 투명 오버레이 창에 "지금 재생 중인 곡"을 보여주는 데스크톱 위젯 (Electron Forge + Vite + TypeScript).
 
