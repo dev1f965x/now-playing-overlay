@@ -1,28 +1,30 @@
 # now-playing-overlay
 
-항상 위에 떠있는 투명 오버레이 창에 "지금 재생 중인 곡"을 보여주는 데스크톱 위젯 (Electron Forge + Vite + TypeScript).
+🌐 [English](./README.md) | [한국어](./README.ko.md)
 
-## 실행 전 준비 (호스트에 직접, Docker 아님)
+An always-on-top transparent overlay widget that shows what's currently playing (Electron Forge + Vite + TypeScript).
 
-Electron은 화면(GUI)이 필요해서 Docker 컨테이너 안에서 실행할 수 없습니다. 아래는 **호스트 PC에 직접** 해야 합니다.
+## Before running (on host, not Docker)
 
-1. [Node.js](https://nodejs.org) 설치 (LTS 버전 권장)
-2. 이 폴더에서:
+Electron needs a display, so it can't run inside a Docker container. The steps below must be done **directly on your host machine**.
+
+1. Install [Node.js](https://nodejs.org) (LTS recommended)
+2. In this folder:
    ```
    npm install
    npm start
    ```
 
-## 지금 상태 (MVP)
+## Current state (MVP)
 
-- 항상 위에 떠있는(always-on-top), 테두리 없는(frameless), 투명한 오버레이 창까지만 만들어져 있습니다.
-- "지금 재생 중인 곡" 데이터는 아직 **가짜(mock) 값**입니다 — `src/main.ts`의 `getNowPlaying()` 함수를 보세요.
+- The always-on-top, frameless, transparent overlay window shell is built.
+- The "now playing" data is still a **mock placeholder** — see `getNowPlaying()` in `src/main.ts`.
 
-## 다음에 할 일 (미착수)
+## Next steps (not started)
 
-실제로 재생 중인 곡을 가져오려면 아래 중 하나를 붙여야 합니다 — 어떤 걸 재생 소스로 쓸지에 따라 방법이 달라져서, 미리 정하지 않고 남겨뒀습니다:
+Getting real "now playing" data requires wiring up one of the following. Left undecided on purpose since it depends on which playback source you actually want to track:
 
-- **Windows 미디어 세션(SMTC)** — OS 레벨에서 "지금 재생 중" 정보를 가져오는 방식(스포티파이/유튜브/브라우저 등 미디어 재생하는 모든 앱에서 공통으로 동작). Node에서 직접 접근하려면 네이티브 모듈이 필요해서 구현이 좀 까다로움
-- **Spotify Web API** — 스포티파이만 쓴다면 이쪽이 더 간단함(공식 API, 로그인 연동 필요)
+- **Windows Media Session (SMTC)** — OS-level "now playing" info that works across any app playing media (Spotify, YouTube, browsers, etc.). Requires a native module to access from Node, so it's a bit more involved.
+- **Spotify Web API** — Simpler if you only care about Spotify (official API, needs login/auth setup).
 
-`getNowPlaying()` 함수 안의 구현만 바꾸면 나머지(오버레이 표시 로직)는 그대로 재사용됩니다.
+Only `getNowPlaying()`'s implementation needs to change — the rest of the overlay display logic can stay as-is.
