@@ -1,14 +1,15 @@
-import './index.css';
+import "./index.css";
 
-const titleEl = document.querySelector<HTMLParagraphElement>('#title')!;
-const artistEl = document.querySelector<HTMLParagraphElement>('#artist')!;
+function element<T extends HTMLElement>(selector: string): T {
+  const el = document.querySelector<T>(selector);
+  if (!el) throw new Error(`Missing element: ${selector}`);
+  return el;
+}
 
-window.overlayAPI.onNowPlaying((data) => {
-  if (!data) {
-    titleEl.textContent = '재생 중인 곡 없음';
-    artistEl.textContent = '';
-    return;
-  }
-  titleEl.textContent = data.title;
-  artistEl.textContent = data.artist;
+const titleEl = element<HTMLParagraphElement>("#title");
+const artistEl = element<HTMLParagraphElement>("#artist");
+
+window.overlayAPI.onNowPlaying((track) => {
+  titleEl.textContent = track?.title ?? "재생 중인 곡 없음";
+  artistEl.textContent = track?.artist ?? "";
 });

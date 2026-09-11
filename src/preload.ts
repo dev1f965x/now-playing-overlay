@@ -1,7 +1,9 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld('overlayAPI', {
-  onNowPlaying: (callback: (data: { title: string; artist: string } | null) => void) => {
-    ipcRenderer.on('now-playing', (_event, data) => callback(data));
+const overlayAPI: Window["overlayAPI"] = {
+  onNowPlaying: (callback) => {
+    ipcRenderer.on("now-playing", (_event, track: NowPlaying | null) => callback(track));
   },
-});
+};
+
+contextBridge.exposeInMainWorld("overlayAPI", overlayAPI);

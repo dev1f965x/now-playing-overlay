@@ -1,18 +1,26 @@
-import { app, BrowserWindow } from 'electron';
-import path from 'node:path';
-import started from 'electron-squirrel-startup';
+import { app, BrowserWindow } from "electron";
+import path from "node:path";
+import started from "electron-squirrel-startup";
 
+// The Squirrel installer launches the app with setup flags; exit immediately in that case.
 if (started) {
   app.quit();
 }
 
-// TODO: 실제 재생 중인 곡 정보를 가져오는 부분. 지금은 자리표시자(mock)만 있음.
-// 나중에 여기를 Windows 미디어 세션(SMTC) 또는 Spotify Web API 호출로 교체하면 됨.
-function getNowPlaying(): { title: string; artist: string } | null {
-  return { title: '(아직 연동 안 됨)', artist: '재생 중인 곡 정보 없음' };
+const POLL_INTERVAL_MS = 1000;
+
+/**
+ * Returns the track currently playing on the system, or `null` when nothing is.
+ *
+ * No playback source is connected yet. Candidates are the Windows media session
+ * (any player, needs a native module) or the Spotify Web API (Spotify only).
+ * The overlay depends on nothing but this signature.
+ */
+function getNowPlaying(): NowPlaying | null {
+  return null;
 }
 
-const createWindow = () => {
+function createWindow() {
   const overlay = new BrowserWindow({
     width: 360,
     height: 90,
@@ -22,33 +30,31 @@ const createWindow = () => {
     resizable: false,
     skipTaskbar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     overlay.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    overlay.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
-    );
+    overlay.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  // 1초마다 지금 재생 중인 곡 정보를 렌더러로 전달
-  setInterval(() => {
-    overlay.webContents.send('now-playing', getNowPlaying());
-  }, 1000);
-};
+  const timer = setInterval(() => {
+    overlay.webContents.send("now-playing", getNowPlaying());
+  }, POLL_INTERVAL_MS);
+  overlay.on("closed", () => clearInterval(timer));
+}
 
-app.on('ready', createWindow);
+app.on("ready", createWindow);
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
