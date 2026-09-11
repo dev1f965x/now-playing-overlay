@@ -2,29 +2,30 @@
 
 [English](./README.md) | [한국어](./README.ko.md)
 
-An always-on-top transparent overlay widget that shows what's currently playing (Electron Forge + Vite + TypeScript).
+Always-on-top transparent overlay that shows the track currently playing.
 
-## Before running (on host, not Docker)
+> No playback source is connected yet, so the overlay always shows no track.
+> Implement `getNowPlaying()` in `src/main.ts` to connect one.
 
-Electron needs a display, so it can't run inside a Docker container. The steps below must be done **directly on your host machine**.
+## Run
 
-1. Install [Node.js](https://nodejs.org) (LTS recommended)
-2. In this folder:
-   ```
-   npm install
-   npm start
-   ```
+Requires [Node.js](https://nodejs.org).
 
-## Current state (MVP)
+```bash
+npm install
+npm start
+```
 
-- The always-on-top, frameless, transparent overlay window shell is built.
-- The "now playing" data is still a **mock placeholder** — see `getNowPlaying()` in `src/main.ts`.
+Drag the overlay to move it. Close it with `Alt+F4` while it has focus.
 
-## Next steps (not started)
+## Build
 
-Getting real "now playing" data requires wiring up one of the following. Left undecided on purpose since it depends on which playback source you actually want to track:
+```bash
+npm run make
+```
 
-- **Windows Media Session (SMTC)** — OS-level "now playing" info that works across any app playing media (Spotify, YouTube, browsers, etc.). Requires a native module to access from Node, so it's a bit more involved.
-- **Spotify Web API** — Simpler if you only care about Spotify (official API, needs login/auth setup).
+Installers are written to `out/make`.
 
-Only `getNowPlaying()`'s implementation needs to change — the rest of the overlay display logic can stay as-is.
+## License
+
+[MIT](./LICENSE)
