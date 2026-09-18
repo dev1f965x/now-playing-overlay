@@ -1,26 +1,24 @@
 import { app, BrowserWindow } from "electron";
 import path from "node:path";
-import started from "electron-squirrel-startup";
+import launchedByInstaller from "electron-squirrel-startup";
 
 // The Squirrel installer launches the app with setup flags; exit immediately in that case.
-if (started) {
+if (launchedByInstaller) {
   app.quit();
 }
 
 const POLL_INTERVAL_MS = 1000;
 
 /**
- * Returns the track currently playing on the system, or `null` when nothing is.
- *
  * No playback source is connected yet. Candidates are the Windows media session
  * (any player, needs a native module) or the Spotify Web API (Spotify only).
  * The overlay depends on nothing but this signature.
  */
-function getNowPlaying(): NowPlaying | null {
+function readNowPlaying(): NowPlaying | null {
   return null;
 }
 
-function createWindow() {
+function createOverlayWindow() {
   const overlay = new BrowserWindow({
     width: 360,
     height: 90,
@@ -40,13 +38,18 @@ function createWindow() {
     overlay.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  const timer = setInterval(() => {
-    overlay.webContents.send("now-playing", getNowPlaying());
-  }, POLL_INTERVAL_MS);
-  overlay.on("closed", () => clearInterval(timer));
+  sendNowPlayingWhileOpen(overlay);
 }
 
-app.on("ready", createWindow);
+function sendNowPlayingWhileOpen(overlay: BrowserWindow) {
+  const poll = setInterval(() => {
+    overlay.webContents.send("now-playing", readNowPlaying());
+  }, POLL_INTERVAL_MS);
+
+  overlay.on("closed", () => clearInterval(poll));
+}
+
+app.on("ready", createOverlayWindow);
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -56,6 +59,6 @@ app.on("window-all-closed", () => {
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    createOverlayWindow();
   }
 });

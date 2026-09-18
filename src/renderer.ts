@@ -1,15 +1,17 @@
 import "./index.css";
 
-function element<T extends HTMLElement>(selector: string): T {
-  const el = document.querySelector<T>(selector);
-  if (!el) throw new Error(`Missing element: ${selector}`);
-  return el;
+const NOTHING_PLAYING = "재생 중인 곡 없음";
+
+function requireElement<T extends HTMLElement>(selector: string): T {
+  const element = document.querySelector<T>(selector);
+  if (!element) throw new Error(`Missing element: ${selector}`);
+  return element;
 }
 
-const titleEl = element<HTMLParagraphElement>("#title");
-const artistEl = element<HTMLParagraphElement>("#artist");
+const title = requireElement<HTMLParagraphElement>("#title");
+const artist = requireElement<HTMLParagraphElement>("#artist");
 
 window.overlayAPI.onNowPlaying((track) => {
-  titleEl.textContent = track?.title ?? "재생 중인 곡 없음";
-  artistEl.textContent = track?.artist ?? "";
+  title.textContent = track?.title ?? NOTHING_PLAYING;
+  artist.textContent = track?.artist ?? "";
 });
