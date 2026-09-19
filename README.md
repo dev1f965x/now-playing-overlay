@@ -5,7 +5,7 @@
 Always-on-top transparent overlay that shows the track currently playing.
 
 > No playback source is connected yet, so the overlay always shows no track.
-> Implement `getNowPlaying()` in `src/main.ts` to connect one.
+> Implement `readNowPlaying()` in `src/main.ts` to connect one.
 
 ## Run
 
