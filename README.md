@@ -1,7 +1,5 @@
 # now-playing-overlay
 
-[English](./README.md) | [한국어](./README.ko.md)
-
 Always-on-top transparent overlay that shows the track currently playing.
 
 > No playback source is connected yet, so the overlay always shows no track.
